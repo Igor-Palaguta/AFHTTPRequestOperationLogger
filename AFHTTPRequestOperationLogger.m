@@ -64,6 +64,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)logMessage:(NSString *)message {
+    NSLog(@"%@", message);
+}
+
 #pragma mark - NSNotification
 
 static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate;
@@ -88,11 +92,17 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     
     switch (self.level) {
         case AFLoggerLevelDebug:
-            NSLog(@"%@ '%@': %@ %@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], [operation.request allHTTPHeaderFields], body);
+        {
+            NSString *message = [NSString stringWithFormat:@"%@ '%@': %@ %@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], [operation.request allHTTPHeaderFields], body];
+             [self logMessage:message];
             break;
+        }
         case AFLoggerLevelInfo:
-            NSLog(@"%@ '%@'", [operation.request HTTPMethod], [[operation.request URL] absoluteString]);
+        {
+            NSString *message = [NSString stringWithFormat:@"%@ '%@'", [operation.request HTTPMethod], [[operation.request URL] absoluteString]];
+             [self logMessage:message];
             break;
+        }
         default:
             break;
     }
@@ -117,18 +127,27 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
             case AFLoggerLevelInfo:
             case AFLoggerLevelWarn:
             case AFLoggerLevelError:
-                NSLog(@"[Error] %@ '%@' (%ld) [%.04f s]: %@", [operation.request HTTPMethod], [[operation.response URL] absoluteString], (long)[operation.response statusCode], elapsedTime, operation.error);
+            {
+                NSString *message = [NSString stringWithFormat:@"[Error] %@ '%@' (%ld) [%.04f s]: %@", [operation.request HTTPMethod], [[operation.response URL] absoluteString], (long)[operation.response statusCode], elapsedTime, operation.error];
+                [self logMessage:message];
+            }
             default:
                 break;
         }
     } else {
         switch (self.level) {
             case AFLoggerLevelDebug:
-                NSLog(@"%ld '%@' [%.04f s]: %@ %@", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime, [operation.response allHeaderFields], operation.responseString);
+            {
+                NSString *message = [NSString stringWithFormat:@"%ld '%@' [%.04f s]: %@ %@", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime, [operation.response allHeaderFields], operation.responseString];
+                [self logMessage:message];
                 break;
+            }
             case AFLoggerLevelInfo:
-                NSLog(@"%ld '%@' [%.04f s]", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime);
+            {
+                NSString *message = [NSString stringWithFormat:@"%ld '%@' [%.04f s]", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime];
+                [self logMessage:message];
                 break;
+            }
             default:
                 break;
         }
